@@ -21,12 +21,25 @@ export default function App() {
     getTodos();
   };
 
+  const editTodo = async (id, updates) => {
+    try {
+      const res = await axios.put(
+        `http://localhost:5001/api/todos/${id}`,
+        updates
+      );
+      const updatedTodo = res.data; // access updated todo from backend
+
+      // Mongo uses `_id`. Replace the matching item immutably.
+      setTodos((prev) => prev.map((item) => (item._id === id ? updatedTodo : item)));
+    } catch (error) {
+      console.error("Failed to update todo", error);
+    }
+  };
+
   const deleteTodo = async (id) => {
     await axios.delete(`http://localhost:5001/api/todos/${id}`);
     getTodos();
   };
-
-  
 
   useEffect(() => {
     getTodos();
@@ -49,6 +62,16 @@ export default function App() {
           {todos.map((item) => (
             <li key={item._id}>
               {item.title}{" "}
+              <button
+                onClick={() => {
+                  const newTitle = prompt("Edit todo", item.title);
+                  if (newTitle !== null && newTitle.trim() !== "") {
+                    editTodo(item._id, { title: newTitle.trim() });
+                  }
+                }}
+              >
+                Edit
+              </button>{" "}
               <button onClick={() => deleteTodo(item._id)}>Dele</button>
             </li>
           ))}
