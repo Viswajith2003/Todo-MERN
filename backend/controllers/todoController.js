@@ -20,6 +20,14 @@ export const createTodo = async (req, res) => {
   }
 };
 
+export const editTodo=async()=>{
+  try {
+    
+  } catch (error) {
+    
+  }
+}
+
 export const deleteTodo = async (req, res) => {
   try {
     const deleteTodo = await Todo.findByIdAndDelete(req.params.id);     //Uses the todo ID from the URL
